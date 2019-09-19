@@ -47,4 +47,7 @@ module.exports = {
 			filename: "[name].css",
 		}),
 	],
+	devServer: {
+		stats: "errors-only",
+	},
 };
