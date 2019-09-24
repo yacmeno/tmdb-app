@@ -1,0 +1,35 @@
+.header {
+	margin: 10px 10px;
+	display: flex;
+	width: 100%;
+	justify-content: center;
+
+	> * {
+		margin-right: 10px;
+	}
+
+	&__logo {
+		width: 45px;
+		height: 40px;
+	}
+
+	&__search {
+		border: 1px solid $tmdb-color;
+		border-radius: 20px;
+		padding-inline-start: 20px;
+		width: 30%;
+	}
+}
+
+.search-button {
+	> svg {
+		fill: $tmdb-color;
+	}
+
+	&:hover {
+		border-radius: 20%;
+		box-shadow: 0 1px 6px 0 $tmdb-color;
+	}
+
+	cursor: pointer;
+}
