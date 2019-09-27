@@ -24,11 +24,9 @@
 .search-button {
 	> svg {
 		fill: $tmdb-color;
-	}
-
-	&:hover {
-		border-radius: 20%;
-		box-shadow: 0 1px 6px 0 $tmdb-color;
+		&:hover {
+			@include hover-drop-shadow;
+		}
 	}
 
 	cursor: pointer;

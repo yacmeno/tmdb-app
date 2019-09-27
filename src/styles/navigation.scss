@@ -1,0 +1,19 @@
+.navigation {
+	ul {
+		list-style: none;
+		display: flex;
+		justify-content: center;
+	}
+
+	li {
+		margin-right: 50px;
+	}
+
+	a {
+		text-decoration: none;
+		color: $tmdb-color;
+		&:hover {
+			@include hover-drop-shadow;
+		}
+	}
+}
