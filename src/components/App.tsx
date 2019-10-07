@@ -1,14 +1,12 @@
 import React from "react";
-import Header from "./Header";
-import Navigation from "./Navigation";
+import { Router } from "./Router";
+
+const routes = new Map<string, string>();
+routes.set("/popular", "Popular");
+routes.set("/watch-later", "Watch later");
 
 const App: React.FC = () => {
-	return (
-		<>
-			<Header />
-			<Navigation />
-		</>
-	);
+	return <Router routes={routes} />;
 };
 
 export default App;

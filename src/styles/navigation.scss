@@ -15,5 +15,8 @@
 		&:hover {
 			@include hover-drop-shadow;
 		}
+		&.active {
+			text-decoration: underline;
+		}
 	}
 }
