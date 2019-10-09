@@ -4,18 +4,18 @@ interface ILinkProps {
 	to: string;
 	text: string;
 	onRouteChange: any;
-	currentRoute: string;
+	isActive: boolean;
 }
 
 export const Link: React.FC<ILinkProps> = ({
 	to,
 	text,
 	onRouteChange,
-	currentRoute,
+	isActive,
 }) => {
 	return (
 		<a
-			className={currentRoute === to ? "active" : ""}
+			className={isActive ? "active" : ""}
 			href={to}
 			onClick={(e: React.MouseEvent) => onRouteChange(e, to)}
 		>

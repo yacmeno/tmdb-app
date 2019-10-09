@@ -1,16 +1,18 @@
 import React from "react";
 import { Link } from "./Link";
+import { RouteValue } from "../Router/Router";
 
 interface INavigationProps {
-	routes: Map<string, string>;
-	currentRoute: string;
+	routes: Map<string, RouteValue>;
+	fallbackRoutes: Map<string, string>;
+	activeRoute: string | null;
 	onRouteChange: any;
 }
 
 export const Navbar: React.FC<INavigationProps> = ({
 	routes,
 	onRouteChange,
-	currentRoute,
+	activeRoute,
 }) => {
 	const links: JSX.Element[] = [];
 
@@ -19,11 +21,11 @@ export const Navbar: React.FC<INavigationProps> = ({
 			<li key={k}>
 				<Link
 					to={k}
-					text={v}
+					text={v.name}
 					onRouteChange={(e: React.MouseEvent, route: string) =>
 						onRouteChange(e, route)
 					}
-					currentRoute={currentRoute}
+					isActive={activeRoute === k}
 				/>
 			</li>,
 		),

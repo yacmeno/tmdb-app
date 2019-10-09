@@ -7,29 +7,43 @@ interface IMovieListProps {
 
 export const MovieList: React.FC<IMovieListProps> = ({ currentRoute }) => {
 	const [movies, setMovies] = React.useState<IMovieCardProps[]>([]);
+	const [popularMovies, setPopularMovies] = React.useState<IMovieCardProps[]>(
+		[],
+	);
+	const [watchLaterMovies, setWatchLaterMovies] = React.useState<
+		IMovieCardProps[]
+	>([]);
 
 	React.useEffect(() => {
-		// api call for first page of popular movies
-		popularMovies.push(
+		setPopularMovies([
 			{
-				title: "batman",
-				overview: "Some long text",
-				release_date: "January 2918",
+				title: "Batman",
+				overview: "Batman overview",
+				release_date: "2019",
 				vote_average: 4,
 			},
 			{
-				title: "the godfather",
-				overview: "Some long text",
-				release_date: "January 2918",
-				vote_average: 4,
+				title: "Spider man",
+				overview: "Spider man overview",
+				release_date: "2018",
+				vote_average: 3,
+			},
+		]);
+
+		setWatchLaterMovies([
+			{
+				title: "Godfather",
+				overview: "Godfather overview",
+				release_date: "2017",
+				vote_average: 2,
 			},
 			{
-				title: "superman",
-				overview: "Some long text",
-				release_date: "January 2918",
-				vote_average: 4,
+				title: "Goodfellas",
+				overview: "Goodfellas overview",
+				release_date: "2016",
+				vote_average: 1,
 			},
-		);
+		]);
 	}, []);
 
 	React.useEffect(() => {
@@ -38,7 +52,7 @@ export const MovieList: React.FC<IMovieListProps> = ({ currentRoute }) => {
 		} else if (currentRoute === "/watch-later") {
 			setMovies(watchLaterMovies);
 		}
-	}, [currentRoute]);
+	}, [currentRoute, popularMovies, watchLaterMovies]);
 
 	return (
 		<ul
@@ -63,26 +77,3 @@ export const MovieList: React.FC<IMovieListProps> = ({ currentRoute }) => {
 		</ul>
 	);
 };
-
-const popularMovies: IMovieCardProps[] = [];
-
-const watchLaterMovies: IMovieCardProps[] = [
-	{
-		title: "spider man",
-		overview: "Some long text",
-		release_date: "January 2918",
-		vote_average: 4,
-	},
-	{
-		title: "ant man",
-		overview: "Some long text",
-		release_date: "January 2918",
-		vote_average: 4,
-	},
-	{
-		title: "bad man",
-		overview: "Some long text",
-		release_date: "January 2918",
-		vote_average: 4,
-	},
-];
