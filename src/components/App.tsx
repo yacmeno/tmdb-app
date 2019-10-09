@@ -5,11 +5,13 @@ import { MovieList } from "./MovieListing/MovieList";
 const routes = new Map<string, RouteValue>();
 routes.set("/popular", {
 	name: "Popular",
+	/* eslint-disable react/display-name */
 	render: () => <MovieList currentRoute={"/popular"} />,
 	alias: "/",
 });
 routes.set("/watch-later", {
 	name: "Watch later",
+	/* eslint-disable react/display-name */
 	render: () => <MovieList currentRoute={"/watch-later"} />,
 });
 

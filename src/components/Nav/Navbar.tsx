@@ -27,8 +27,8 @@ export const Navbar: React.FC<INavigationProps> = ({
 					}
 					isActive={activeRoute === k}
 				/>
-			</li>,
-		),
+			</li>
+		)
 	);
 
 	return (

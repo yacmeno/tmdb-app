@@ -25,7 +25,7 @@ export const Router: React.FC<IRouterProps> = ({ routes, fallbackRoutes }) => {
 
 	const handleRouteChange = (
 		ev: React.MouseEvent,
-		targetRoute: string,
+		targetRoute: string
 	): void => {
 		ev.preventDefault();
 		setCurrentRoute(targetRoute);

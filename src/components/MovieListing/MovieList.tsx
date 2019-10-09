@@ -8,7 +8,7 @@ interface IMovieListProps {
 export const MovieList: React.FC<IMovieListProps> = ({ currentRoute }) => {
 	const [movies, setMovies] = React.useState<IMovieCardProps[]>([]);
 	const [popularMovies, setPopularMovies] = React.useState<IMovieCardProps[]>(
-		[],
+		[]
 	);
 	const [watchLaterMovies, setWatchLaterMovies] = React.useState<
 		IMovieCardProps[]
