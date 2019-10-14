@@ -45,10 +45,15 @@ export const MovieList: React.FC<IMovieListProps> = ({ currentRoute }) => {
 						poster_path={movie.poster_path}
 					/>
 				))}
-				{isLoading && <div>Loading data...</div>}
-				{hasError && <div>An error has occured</div>}
 			</ul>
-			<button onClick={onLoadMore}>Load more</button>
+			<div className="movies__more">
+				{isLoading ? (
+					<div className="spinner"></div>
+				) : (
+					<button onClick={onLoadMore}>Load more</button>
+				)}
+				{hasError && <p>An error has occured 😵</p>}
+			</div>
 		</>
 	);
 };

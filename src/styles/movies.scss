@@ -28,6 +28,32 @@
 			box-shadow: 0 0 1rem $tmdb-color;
 		}
 	}
+
+	&__more {
+		display: flex;
+		justify-content: center;
+		flex-direction: column;
+		width: 80%;
+		margin: 1rem auto 1rem;
+		color: $tmdb-color;
+
+		button {
+			background: transparent;
+			border: none;
+			color: inherit;
+			font-family: inherit;
+			font-size: 1rem;
+
+			&:hover {
+				@include hover-drop-shadow;
+				cursor: pointer;
+			}
+		}
+
+		> * {
+			margin: inherit;
+		}
+	}
 }
 
 .star-icon {
