@@ -1,0 +1,58 @@
+.movies {
+	&__list {
+		color: white;
+		display: flex;
+		align-items: center;
+		width: 80%;
+		margin: auto;
+		flex-wrap: wrap;
+	}
+
+	&__item {
+		margin-bottom: 1rem;
+		padding: 1rem;
+		list-style: none;
+		border: 1px solid $tmdb-color;
+		border-radius: 5px;
+		display: flex;
+		width: 100%;
+		img {
+			flex-shrink: 0;
+			flex-basis: 200px;
+			height: 300px;
+			margin-right: 1rem;
+		}
+
+		&:hover,
+		&:focus {
+			box-shadow: 0 0 1rem $tmdb-color;
+		}
+	}
+}
+
+.star-icon {
+	width: 24px;
+	height: 24px;
+	margin-left: 0.5rem;
+	> svg {
+		fill: gold;
+	}
+}
+
+.movie-rating {
+	display: flex;
+}
+
+.watch-later-icon {
+	width: 100px;
+	height: 100px;
+	flex-shrink: 0;
+	margin: auto 1rem auto auto;
+	> svg {
+		fill: $tmdb-color;
+		&:hover {
+			@include hover-drop-shadow;
+			cursor: pointer;
+		}
+	}
+}

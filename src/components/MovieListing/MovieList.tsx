@@ -34,16 +34,7 @@ export const MovieList: React.FC<IMovieListProps> = ({ currentRoute }) => {
 
 	return (
 		<>
-			<ul
-				style={{
-					color: "white",
-					display: "flex",
-					alignItems: "center",
-					width: "80%",
-					margin: "auto",
-					flexWrap: "wrap",
-				}}
-			>
+			<ul className="movies__list">
 				{movies.map((movie, i) => (
 					<MovieCard
 						key={i}
@@ -51,6 +42,7 @@ export const MovieList: React.FC<IMovieListProps> = ({ currentRoute }) => {
 						release_date={movie.release_date}
 						overview={movie.overview}
 						vote_average={movie.vote_average}
+						poster_path={movie.poster_path}
 					/>
 				))}
 				{isLoading && <div>Loading data...</div>}
