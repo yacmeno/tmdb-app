@@ -1,17 +1,16 @@
 import React from "react";
-import { MovieCard, IMovieCardProps } from "./MovieCard";
+import { MovieCard, IMovie } from "./MovieCard";
 import { useApi } from "../../hooks/useApi";
+import { useWatchLater } from "../../hooks/useWatchLater";
 
 interface IMovieListProps {
 	currentRoute: string;
 }
 
-export const MovieList: React.FC<IMovieListProps> = ({ currentRoute }) => {
-	const [movies, setMovies] = React.useState<IMovieCardProps[]>([]);
+export const MoviesList: React.FC<IMovieListProps> = ({ currentRoute }) => {
+	const [movies, setMovies] = React.useState<IMovie[]>([]);
 
-	const [watchLaterMovies, setWatchLaterMovies] = React.useState<
-		IMovieCardProps[]
-	>([]);
+	const [watchLaterMovies, setWatchLaterMovies] = useWatchLater([]);
 
 	const [{ isLoading, hasError, data: popularMoviesData }, changePage] = useApi(
 		{
@@ -38,22 +37,22 @@ export const MovieList: React.FC<IMovieListProps> = ({ currentRoute }) => {
 				{movies.map((movie, i) => (
 					<MovieCard
 						key={i}
-						title={movie.title}
-						release_date={movie.release_date}
-						overview={movie.overview}
-						vote_average={movie.vote_average}
-						poster_path={movie.poster_path}
+						movie={movie}
+						setWatchLaterMovies={setWatchLaterMovies}
+						currentRoute={currentRoute}
 					/>
 				))}
 			</ul>
-			<div className="movies__more">
-				{isLoading ? (
-					<div className="spinner"></div>
-				) : (
-					<button onClick={onLoadMore}>Load more</button>
-				)}
-				{hasError && <p>An error has occured 😵</p>}
-			</div>
+			{currentRoute === "/popular" && (
+				<div className="movies__more">
+					{isLoading ? (
+						<div className="spinner"></div>
+					) : (
+						<button onClick={onLoadMore}>Load more</button>
+					)}
+					{hasError && <p>An error has occured 😵</p>}
+				</div>
+			)}
 		</>
 	);
 };

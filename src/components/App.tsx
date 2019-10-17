@@ -1,18 +1,18 @@
 import React from "react";
 import { Router, RouteValue } from "./Router/Router";
-import { MovieList } from "./MovieListing/MovieList";
+import { MoviesList } from "./MoviesListing/MoviesList";
 
 const routes = new Map<string, RouteValue>();
 routes.set("/popular", {
 	name: "Popular",
 	/* eslint-disable react/display-name */
-	render: () => <MovieList currentRoute={"/popular"} />,
+	render: () => <MoviesList currentRoute={"/popular"} />,
 	alias: "/",
 });
 routes.set("/watch-later", {
 	name: "Watch later",
 	/* eslint-disable react/display-name */
-	render: () => <MovieList currentRoute={"/watch-later"} />,
+	render: () => <MoviesList currentRoute={"/watch-later"} />,
 });
 
 const fallbackRoutes = new Map<string, string>();

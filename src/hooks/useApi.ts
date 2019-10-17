@@ -1,5 +1,5 @@
 import React from "react";
-import { IMovieCardProps } from "../components/MovieListing/MovieCard";
+import { IMovie } from "../components/MoviesListing/MovieCard";
 
 const API_KEY = "f1030bfefbdb04054df3f155f848fb65";
 const API_URL = "https://api.themoviedb.org/3/movie";
@@ -8,7 +8,7 @@ interface PopularMoviesResponse {
 	page: number;
 	total_results: number;
 	total_pages: number;
-	results: IMovieCardProps[];
+	results: IMovie[];
 }
 
 interface UseApiProps {
