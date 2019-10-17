@@ -31,6 +31,12 @@ export const MoviesList: React.FC<IMovieListProps> = ({ currentRoute }) => {
 		changePage(nextPage);
 	};
 
+	const isInWatchLater = (movieId: IMovie["id"]): boolean => {
+		return watchLaterMovies.some(m => {
+			return m.id === movieId;
+		});
+	};
+
 	return (
 		<>
 			<ul className="movies__list">
@@ -39,7 +45,7 @@ export const MoviesList: React.FC<IMovieListProps> = ({ currentRoute }) => {
 						key={i}
 						movie={movie}
 						setWatchLaterMovies={setWatchLaterMovies}
-						currentRoute={currentRoute}
+						isInWatchLater={isInWatchLater(movie.id)}
 					/>
 				))}
 			</ul>

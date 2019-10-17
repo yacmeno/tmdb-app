@@ -21,7 +21,7 @@ export interface IMovie {
 interface IMovieCardProps {
 	movie: IMovie;
 	setWatchLaterMovies: React.Dispatch<WatchLaterActionTypes>;
-	currentRoute: string;
+	isInWatchLater: boolean;
 }
 
 const StarIcon: React.FC = () => {
@@ -80,7 +80,7 @@ const RemoveIcon: React.FC<IRemoveIconProps> = ({ onRemove, movie }) => {
 export const MovieCard: React.FC<IMovieCardProps> = ({
 	movie,
 	setWatchLaterMovies,
-	currentRoute,
+	isInWatchLater,
 }) => {
 	const addToWatchLater = (movie: IMovie) => {
 		setWatchLaterMovies({ type: ADD_WATCH_LATER, payload: movie });
@@ -105,7 +105,7 @@ export const MovieCard: React.FC<IMovieCardProps> = ({
 				<p>{movie.release_date}</p>
 				<p>{movie.overview}</p>
 			</div>
-			{currentRoute === "/watch-later" ? (
+			{isInWatchLater ? (
 				<RemoveIcon onRemove={removeFromWatchLater} movie={movie} />
 			) : (
 				<WatchLaterIcon onAdd={addToWatchLater} movie={movie} />
