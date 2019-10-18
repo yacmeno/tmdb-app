@@ -17,10 +17,20 @@ export type RouteValue = {
 export const Router: React.FC<IRouterProps> = ({ routes, fallbackRoutes }) => {
 	const [currentRoute, setCurrentRoute] = React.useState<string>("/");
 
-	// Setup initial route client navigated to
 	React.useEffect(() => {
-		const browserRoute = window.location.pathname;
-		setCurrentRoute(browserRoute);
+		// Route on load
+		setCurrentRoute(window.location.pathname);
+
+		// Route on popstate
+		function onPopState(ev: PopStateEvent) {
+			setCurrentRoute(ev.state.page);
+		}
+
+		window.addEventListener("popstate", onPopState);
+
+		return () => {
+			window.removeEventListener("popstate", onPopState);
+		};
 	}, []);
 
 	const handleRouteChange = (
