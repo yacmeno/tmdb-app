@@ -40,6 +40,7 @@ export const useApi = ({ page } = DEFAULT_PARAMS): UseApiReturnType => {
 	const [currentPage, setCurrentPage] = React.useState<string>(page);
 
 	React.useEffect(() => {
+		let abortEffect = false;
 		const fetchData = () => {
 			setHasError(false);
 			setIsLoading(true);
@@ -47,26 +48,34 @@ export const useApi = ({ page } = DEFAULT_PARAMS): UseApiReturnType => {
 			fetch(`${URL}${`&page=${currentPage}`}`)
 				.then(res => res.json())
 				.then(resData => {
-					if ("errors" in resData) {
-						setHasError(true);
-						setIsLoading(false);
-					} else {
-						setData(prevData => {
-							return {
-								...resData,
-								results: [...prevData.results, ...resData.results],
-							};
-						});
-						setIsLoading(false);
+					if (!abortEffect) {
+						if ("errors" in resData) {
+							setHasError(true);
+							setIsLoading(false);
+						} else {
+							setData(prevData => {
+								return {
+									...resData,
+									results: [...prevData.results, ...resData.results],
+								};
+							});
+							setIsLoading(false);
+						}
 					}
 				})
 				.catch(() => {
-					setHasError(true);
-					setIsLoading(false);
+					if (!abortEffect) {
+						setHasError(true);
+						setIsLoading(false);
+					}
 				});
 		};
 
 		fetchData();
+
+		return () => {
+			abortEffect = true;
+		};
 	}, [currentPage, URL]);
 
 	return [{ isLoading, hasError, data }, setCurrentPage];
