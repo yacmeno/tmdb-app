@@ -67,7 +67,7 @@ export const useApi = ({ page } = DEFAULT_PARAMS): UseApiReturnType => {
 		};
 
 		fetchData();
-	}, [currentPage]);
+	}, [currentPage, URL]);
 
 	return [{ isLoading, hasError, data }, setCurrentPage];
 };
