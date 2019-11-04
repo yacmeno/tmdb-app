@@ -21,6 +21,7 @@ export interface IMovie {
 interface IMovieCardProps {
 	movie: IMovie;
 	setWatchLaterMovies: React.Dispatch<WatchLaterActionTypes>;
+	setMovieInDB: (action: WatchLaterActionTypes) => void;
 	isInWatchLater: boolean;
 }
 
@@ -81,12 +82,15 @@ export const MovieCard: React.FC<IMovieCardProps> = ({
 	movie,
 	setWatchLaterMovies,
 	isInWatchLater,
+	setMovieInDB,
 }) => {
 	const addToWatchLater = (movie: IMovie) => {
 		setWatchLaterMovies({ type: ADD_WATCH_LATER, payload: movie });
+		setMovieInDB({ type: ADD_WATCH_LATER, payload: movie });
 	};
 	const removeFromWatchLater = (movie: IMovie) => {
 		setWatchLaterMovies({ type: REMOVE_WATCH_LATER, payload: movie });
+		setMovieInDB({ type: REMOVE_WATCH_LATER, payload: movie });
 	};
 	return (
 		<li className="movies__item" tabIndex={0}>

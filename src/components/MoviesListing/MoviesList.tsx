@@ -1,7 +1,12 @@
 import React from "react";
 import { MovieCard, IMovie } from "./MovieCard";
 import { useApi } from "../../hooks/useApi";
-import { useWatchLater } from "../../hooks/useWatchLater";
+import {
+	useWatchLater,
+	WatchLaterActionTypes,
+} from "../../hooks/useWatchLater";
+import { DBContext } from "../App";
+import { useTransaction } from "../../hooks/useIndexedDB";
 
 interface IMovieListProps {
 	currentRoute: string;
@@ -10,7 +15,8 @@ interface IMovieListProps {
 export const MoviesList: React.FC<IMovieListProps> = ({ currentRoute }) => {
 	const [movies, setMovies] = React.useState<IMovie[]>([]);
 
-	const [watchLaterMovies, setWatchLaterMovies] = useWatchLater([]);
+	const DBCtx = React.useContext(DBContext);
+	const [watchLaterMovies, setWatchLaterMovies] = useWatchLater();
 
 	const [{ isLoading, hasError, data: popularMoviesData }, changePage] = useApi(
 		{
@@ -37,6 +43,15 @@ export const MoviesList: React.FC<IMovieListProps> = ({ currentRoute }) => {
 		});
 	};
 
+	const setMovieInDB = (action: WatchLaterActionTypes) => {
+		if (DBCtx.DB === null || DBCtx.DBError) {
+			console.error("Invalid IndexedDB");
+			return;
+		}
+
+		useTransaction(DBCtx.DB, action);
+	};
+
 	return (
 		<>
 			<ul className="movies__list">
@@ -45,6 +60,7 @@ export const MoviesList: React.FC<IMovieListProps> = ({ currentRoute }) => {
 						key={i}
 						movie={movie}
 						setWatchLaterMovies={setWatchLaterMovies}
+						setMovieInDB={setMovieInDB}
 						isInWatchLater={isInWatchLater(movie.id)}
 					/>
 				))}

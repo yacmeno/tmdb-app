@@ -1,6 +1,7 @@
 import React from "react";
 import { Router, RouteValue } from "./Router/Router";
 import { MoviesList } from "./MoviesListing/MoviesList";
+import { useIndexedDB } from "../hooks/useIndexedDB";
 
 const routes = new Map<string, RouteValue>();
 routes.set("/popular", {
@@ -18,8 +19,24 @@ routes.set("/watch-later", {
 const fallbackRoutes = new Map<string, string>();
 fallbackRoutes.set("/", "/popular");
 
+export interface IDBContext {
+	DB: IDBDatabase | null;
+	DBError: boolean;
+}
+
+export const DBContext = React.createContext<IDBContext>({
+	DB: null,
+	DBError: false,
+});
+
 const App: React.FC = () => {
-	return <Router routes={routes} fallbackRoutes={fallbackRoutes} />;
+	const { DB, hasError: DBError } = useIndexedDB();
+
+	return (
+		<DBContext.Provider value={{ DB, DBError }}>
+			<Router routes={routes} fallbackRoutes={fallbackRoutes} />
+		</DBContext.Provider>
+	);
 };
 
 export default App;

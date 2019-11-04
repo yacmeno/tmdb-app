@@ -35,27 +35,19 @@ const reducer = (state: IMovie[], action: WatchLaterActionTypes) => {
 				return true;
 			});
 		case CLEAR_WATCH_LATER:
-			return init();
+			return [];
 		default:
 			throw new Error("Invalid watch later action");
 	}
 };
-
-const init = () => {
-	return [];
-};
-
-const INITIAL_MOVIES: IMovie[] = [];
 
 type UseWatchLaterReturnType = [
 	IMovie[],
 	React.Dispatch<WatchLaterActionTypes>
 ];
 
-export const useWatchLater = (
-	initialMovies = INITIAL_MOVIES
-): UseWatchLaterReturnType => {
-	const [movies, dispatch] = React.useReducer(reducer, initialMovies, init);
+export const useWatchLater = (): UseWatchLaterReturnType => {
+	const [movies, dispatch] = React.useReducer(reducer, []);
 
 	return [movies, dispatch];
 };
