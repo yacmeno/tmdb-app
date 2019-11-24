@@ -3,7 +3,7 @@ import {
 	WatchLaterActionTypes,
 	ADD_WATCH_LATER,
 	REMOVE_WATCH_LATER,
-	CLEAR_WATCH_LATER,
+	LOAD_WATCH_LATER,
 } from "./useWatchLater";
 
 // event typing issue: https://github.com/Microsoft/TypeScript/issues/28293
@@ -59,16 +59,29 @@ export const useTransaction = (
 			try {
 				return store.put(action.payload);
 			} catch (err) {
-				console.error(`IndexedDB transaction error: ${err}`);
+				return console.error(`IndexedDB transaction error: ${err}`);
 			}
 		case REMOVE_WATCH_LATER:
 			try {
 				return store.delete(action.payload.id);
 			} catch (err) {
-				console.error(`IDB transaction error: ${err}`);
+				return console.error(`IDB transaction error: ${err}`);
 			}
-		case CLEAR_WATCH_LATER:
-			return;
+		case LOAD_WATCH_LATER:
+			try {
+				const getSavedMovies = store.getAll();
+
+				getSavedMovies.onsuccess = () => {
+					action.callback(getSavedMovies.result);
+				};
+
+				getSavedMovies.onerror = () => {
+					console.error("Error loading movies from IndexedDB");
+				};
+				return;
+			} catch (err) {
+				return console.error("Error loading movies from IndexedDB");
+			}
 		default:
 			throw new Error("Invalid watch later action");
 	}

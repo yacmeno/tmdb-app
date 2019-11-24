@@ -4,6 +4,8 @@ import { useApi } from "../../hooks/useApi";
 import {
 	useWatchLater,
 	WatchLaterActionTypes,
+	LOAD_WATCH_LATER,
+	ADD_WATCH_LATER,
 } from "../../hooks/useWatchLater";
 import { DBContext } from "../App";
 import { useTransaction } from "../../hooks/useIndexedDB";
@@ -31,6 +33,20 @@ export const MoviesList: React.FC<IMovieListProps> = ({ currentRoute }) => {
 			setMovies(watchLaterMovies);
 		}
 	}, [currentRoute, popularMoviesData, watchLaterMovies]);
+
+	React.useEffect(() => {
+		if (DBCtx.DB === null || DBCtx.DBError) {
+			return;
+		}
+
+		useTransaction(DBCtx.DB, {
+			type: LOAD_WATCH_LATER,
+			payload: null,
+			callback: (movies: IMovie[]) => {
+				setWatchLaterMovies({ type: ADD_WATCH_LATER, payload: movies });
+			},
+		});
+	}, [DBCtx]);
 
 	const onLoadMore = () => {
 		const nextPage = (popularMoviesData.page + 1).toString();
