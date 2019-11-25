@@ -15,6 +15,14 @@ routes.set("/watch-later", {
 	/* eslint-disable react/display-name */
 	render: () => <MoviesList currentRoute={"/watch-later"} />,
 });
+routes.set("/search", {
+	name: "Search",
+	/* eslint-disable react/display-name */
+	render: params => (
+		<MoviesList currentRoute={"/search"} currentRouteParams={params} />
+	),
+	omitFromNavbar: true,
+});
 
 const fallbackRoutes = new Map<string, string>();
 fallbackRoutes.set("/", "/popular");

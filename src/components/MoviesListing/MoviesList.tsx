@@ -1,6 +1,6 @@
 import React from "react";
 import { MovieCard, IMovie } from "./MovieCard";
-import { useApi } from "../../hooks/useApi";
+import { usePopularApi, useSearchApi } from "../../hooks/useApi";
 import {
 	useWatchLater,
 	WatchLaterActionTypes,
@@ -12,27 +12,71 @@ import { IDBTransaction } from "../../hooks/useIndexedDB";
 
 interface IMovieListProps {
 	currentRoute: string;
+	currentRouteParams?: string;
 }
 
-export const MoviesList: React.FC<IMovieListProps> = ({ currentRoute }) => {
+export const MoviesList: React.FC<IMovieListProps> = ({
+	currentRoute,
+	currentRouteParams,
+}) => {
 	const [movies, setMovies] = React.useState<IMovie[]>([]);
 
 	const DBCtx = React.useContext(DBContext);
 	const [watchLaterMovies, setWatchLaterMovies] = useWatchLater();
 
-	const [{ isLoading, hasError, data: popularMoviesData }, changePage] = useApi(
+	const [
 		{
-			page: "1",
-		}
-	);
+			isLoading: popularIsLoading,
+			hasError: popularHasError,
+			data: popularMoviesData,
+		},
+		popularChangePage,
+	] = usePopularApi({
+		page: "1",
+	});
+
+	const [
+		{
+			isLoading: searchIsLoading,
+			hasError: searchHasError,
+			data: searchMoviesData,
+		},
+		searchChangePage,
+		searchQuery,
+	] = useSearchApi({
+		page: "1",
+		query: "",
+	});
 
 	React.useEffect(() => {
 		if (currentRoute === "/" || currentRoute === "/popular") {
 			setMovies(popularMoviesData.results);
 		} else if (currentRoute === "/watch-later") {
 			setMovies(watchLaterMovies);
+		} else if (currentRoute === "/search") {
+			setMovies(searchMoviesData.results);
 		}
-	}, [currentRoute, popularMoviesData, watchLaterMovies]);
+	}, [currentRoute, popularMoviesData, watchLaterMovies, searchMoviesData]);
+
+	React.useEffect(() => {
+		if (!currentRouteParams) {
+			return;
+		}
+
+		switch (currentRoute) {
+			case "/search":
+				const params = new URLSearchParams(currentRouteParams);
+				const movieTitle = params.get("title");
+
+				if (movieTitle) {
+					searchQuery(encodeURI(movieTitle));
+				}
+
+				break;
+			default:
+				break;
+		}
+	}, [currentRouteParams]);
 
 	React.useEffect(() => {
 		if (DBCtx.DB === null || DBCtx.DBError) {
@@ -49,8 +93,18 @@ export const MoviesList: React.FC<IMovieListProps> = ({ currentRoute }) => {
 	}, [DBCtx, setWatchLaterMovies]);
 
 	const onLoadMore = () => {
-		const nextPage = (popularMoviesData.page + 1).toString();
-		changePage(nextPage);
+		switch (currentRoute) {
+			case "/popular":
+				const popularNextPage = (popularMoviesData.page + 1).toString();
+				popularChangePage(popularNextPage);
+				break;
+			case "/search":
+				const searchNextPage = (searchMoviesData.page + 1).toString();
+				searchChangePage(searchNextPage);
+				break;
+			default:
+				break;
+		}
 	};
 
 	const isInWatchLater = (movieId: IMovie["id"]): boolean => {
@@ -68,6 +122,22 @@ export const MoviesList: React.FC<IMovieListProps> = ({ currentRoute }) => {
 		IDBTransaction(DBCtx.DB, action);
 	};
 
+	const isLoading = () => {
+		if (popularIsLoading || searchIsLoading) {
+			return true;
+		} else {
+			return false;
+		}
+	};
+
+	const hasError = () => {
+		if (popularHasError || searchHasError) {
+			return true;
+		} else {
+			return false;
+		}
+	};
+
 	return (
 		<>
 			<ul className="movies__list">
@@ -81,14 +151,14 @@ export const MoviesList: React.FC<IMovieListProps> = ({ currentRoute }) => {
 					/>
 				))}
 			</ul>
-			{currentRoute === "/popular" && (
+			{currentRoute !== "/watch-later" && (
 				<div className="movies__more">
-					{isLoading ? (
+					{isLoading() ? (
 						<div className="spinner"></div>
 					) : (
 						<button onClick={onLoadMore}>Load more</button>
 					)}
-					{hasError && <p>An error has occured 😵</p>}
+					{hasError() && <p>An error has occured 😵</p>}
 				</div>
 			)}
 		</>

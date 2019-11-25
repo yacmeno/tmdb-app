@@ -2,7 +2,8 @@ import React from "react";
 import { IMovie } from "../components/MoviesListing/MovieCard";
 
 const API_KEY = "f1030bfefbdb04054df3f155f848fb65";
-const API_URL = "https://api.themoviedb.org/3/movie";
+const POPULAR_API_URL = "https://api.themoviedb.org/3/movie";
+const SEARCH_API_URL = "https://api.themoviedb.org/3/search";
 
 interface PopularMoviesResponse {
 	page: number;
@@ -11,32 +12,36 @@ interface PopularMoviesResponse {
 	results: IMovie[];
 }
 
-interface UseApiProps {
+interface UsePopularApiParams {
 	page: string;
 }
 
-type UseApiReturnType = [
+type UsePopularApiReturnType = [
 	{ hasError: boolean; isLoading: boolean; data: PopularMoviesResponse },
 	React.Dispatch<React.SetStateAction<string>>
 ];
 
-const DEFAULT_PARAMS: UseApiProps = {
+const POPULAR_DEFAULT_PARAMS: UsePopularApiParams = {
 	page: "1",
 };
 
-const INITIAL_DATA: PopularMoviesResponse = {
+const POPULAR_INITIAL_DATA: PopularMoviesResponse = {
 	page: 1,
 	total_results: 0,
 	total_pages: 0,
 	results: [],
 };
 
-export const useApi = ({ page } = DEFAULT_PARAMS): UseApiReturnType => {
-	const URL = `${API_URL}/popular?api_key=${API_KEY}`;
+export const usePopularApi = ({
+	page,
+} = POPULAR_DEFAULT_PARAMS): UsePopularApiReturnType => {
+	const URL = `${POPULAR_API_URL}/popular?api_key=${API_KEY}`;
 
 	const [isLoading, setIsLoading] = React.useState<boolean>(false);
 	const [hasError, setHasError] = React.useState<boolean>(false);
-	const [data, setData] = React.useState<PopularMoviesResponse>(INITIAL_DATA);
+	const [data, setData] = React.useState<PopularMoviesResponse>(
+		POPULAR_INITIAL_DATA
+	);
 	const [currentPage, setCurrentPage] = React.useState<string>(page);
 
 	React.useEffect(() => {
@@ -79,4 +84,127 @@ export const useApi = ({ page } = DEFAULT_PARAMS): UseApiReturnType => {
 	}, [currentPage, URL]);
 
 	return [{ isLoading, hasError, data }, setCurrentPage];
+};
+
+type SearchResponse = PopularMoviesResponse;
+
+interface UseSearchApiParams {
+	page: string;
+	query: string;
+}
+
+type UseSearchApiReturnType = [
+	{ hasError: boolean; isLoading: boolean; data: SearchResponse },
+	React.Dispatch<React.SetStateAction<string>>,
+	React.Dispatch<React.SetStateAction<string>>
+];
+
+const SEARCH_DEFAULT_PARAMS: UseSearchApiParams = {
+	page: "1",
+	query: "",
+};
+
+const SEARCH_INITIAL_DATA: SearchResponse = POPULAR_INITIAL_DATA;
+
+export const useSearchApi = ({
+	query,
+	page,
+} = SEARCH_DEFAULT_PARAMS): UseSearchApiReturnType => {
+	const [isLoading, setIsLoading] = React.useState<boolean>(false);
+	const [hasError, setHasError] = React.useState<boolean>(false);
+	const [data, setData] = React.useState<SearchResponse>(SEARCH_INITIAL_DATA);
+	const [currentPage, setCurrentPage] = React.useState<string>(page);
+	const [qry, setQry] = React.useState<string>(query);
+
+	// On query change: reset pagination and search with query
+	React.useEffect(() => {
+		if (qry.trim() === "") {
+			return;
+		}
+
+		setCurrentPage("1");
+
+		const URL = `${SEARCH_API_URL}/movie?api_key=${API_KEY}&query=${qry}&page=${currentPage}`;
+
+		let abortEffect = false;
+		const fetchData = () => {
+			setHasError(false);
+			setIsLoading(true);
+
+			fetch(`${URL}`)
+				.then(res => res.json())
+				.then(resData => {
+					if (!abortEffect) {
+						if ("errors" in resData) {
+							setHasError(true);
+							setIsLoading(false);
+						} else {
+							setData({
+								...resData,
+								results: [...resData.results],
+							});
+							setIsLoading(false);
+						}
+					}
+				})
+				.catch(() => {
+					if (!abortEffect) {
+						setHasError(true);
+						setIsLoading(false);
+					}
+				});
+		};
+
+		fetchData();
+
+		return () => {
+			abortEffect = true;
+		};
+	}, [qry]);
+
+	// On page change: keep previous results and append next page
+	React.useEffect(() => {
+		if (qry.trim() === "") {
+			return;
+		}
+
+		const URL = `${SEARCH_API_URL}/movie?api_key=${API_KEY}&query=${qry}&page=${currentPage}`;
+
+		let abortEffect = false;
+		const fetchData = () => {
+			setHasError(false);
+			setIsLoading(true);
+
+			fetch(`${URL}`)
+				.then(res => res.json())
+				.then(resData => {
+					if (!abortEffect) {
+						if ("errors" in resData) {
+							setHasError(true);
+							setIsLoading(false);
+						} else {
+							setData(prevData => ({
+								...resData,
+								results: [...prevData.results, ...resData.results],
+							}));
+							setIsLoading(false);
+						}
+					}
+				})
+				.catch(() => {
+					if (!abortEffect) {
+						setHasError(true);
+						setIsLoading(false);
+					}
+				});
+		};
+
+		fetchData();
+
+		return () => {
+			abortEffect = true;
+		};
+	}, [currentPage]);
+
+	return [{ isLoading, hasError, data }, setCurrentPage, setQry];
 };

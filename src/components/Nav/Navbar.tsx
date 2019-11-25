@@ -6,7 +6,7 @@ interface INavigationProps {
 	routes: Map<string, RouteValue>;
 	fallbackRoutes: Map<string, string>;
 	activeRoute: string | null;
-	onRouteChange: any;
+	onRouteChange: (e: React.MouseEvent, route: string) => void;
 }
 
 export const Navbar: React.FC<INavigationProps> = ({
@@ -16,20 +16,22 @@ export const Navbar: React.FC<INavigationProps> = ({
 }) => {
 	const links: JSX.Element[] = [];
 
-	routes.forEach((v, k) =>
+	routes.forEach((v, k) => {
+		if (v.omitFromNavbar) {
+			return;
+		}
+
 		links.push(
 			<li key={k}>
 				<Link
 					to={k}
 					text={v.name}
-					onRouteChange={(e: React.MouseEvent, route: string) =>
-						onRouteChange(e, route)
-					}
+					onRouteChange={onRouteChange}
 					isActive={activeRoute === k}
 				/>
 			</li>
-		)
-	);
+		);
+	});
 
 	return (
 		<nav className="navigation">

@@ -3,7 +3,7 @@ import React from "react";
 interface ILinkProps {
 	to: string;
 	text: string;
-	onRouteChange: any;
+	onRouteChange: (e: React.MouseEvent, route: string) => void;
 	isActive: boolean;
 }
 
