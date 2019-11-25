@@ -47,7 +47,7 @@ export const useIndexedDB = () => {
 	return { DB, hasError };
 };
 
-export const useTransaction = (
+export const IDBTransaction = (
 	DB: IDBDatabase,
 	action: WatchLaterActionTypes
 ) => {
