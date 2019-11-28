@@ -160,6 +160,7 @@ export const useSearchApi = ({
 		return () => {
 			abortEffect = true;
 		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [qry]);
 
 	// On page change: keep previous results and append next page
@@ -204,6 +205,7 @@ export const useSearchApi = ({
 		return () => {
 			abortEffect = true;
 		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [currentPage]);
 
 	return [{ isLoading, hasError, data }, setCurrentPage, setQry];

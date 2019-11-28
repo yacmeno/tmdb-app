@@ -64,19 +64,21 @@ export const MoviesList: React.FC<IMovieListProps> = ({
 		}
 
 		switch (currentRoute) {
-			case "/search":
+			case "/search": {
 				const params = new URLSearchParams(currentRouteParams);
 				const movieTitle = params.get("title");
 
 				if (movieTitle) {
 					searchQuery(encodeURI(movieTitle));
 				}
-
 				break;
+			}
+
 			default:
 				break;
 		}
-	}, [currentRouteParams]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [currentRouteParams, searchQuery]);
 
 	React.useEffect(() => {
 		if (DBCtx.DB === null || DBCtx.DBError) {
@@ -94,14 +96,16 @@ export const MoviesList: React.FC<IMovieListProps> = ({
 
 	const onLoadMore = () => {
 		switch (currentRoute) {
-			case "/popular":
+			case "/popular": {
 				const popularNextPage = (popularMoviesData.page + 1).toString();
 				popularChangePage(popularNextPage);
 				break;
-			case "/search":
+			}
+			case "/search": {
 				const searchNextPage = (searchMoviesData.page + 1).toString();
 				searchChangePage(searchNextPage);
 				break;
+			}
 			default:
 				break;
 		}
