@@ -96,7 +96,7 @@ export const MoviesList: React.FC<IMovieListProps> = ({
 
 	const onLoadMore = () => {
 		switch (currentRoute) {
-			case "/popular": {
+			case "/popular" || "/": {
 				const popularNextPage = (popularMoviesData.page + 1).toString();
 				popularChangePage(popularNextPage);
 				break;
@@ -127,18 +127,44 @@ export const MoviesList: React.FC<IMovieListProps> = ({
 	};
 
 	const isLoading = () => {
-		if (popularIsLoading || searchIsLoading) {
-			return true;
-		} else {
-			return false;
+		switch (currentRoute) {
+			case "/popular" || "/": {
+				if (popularIsLoading) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+			case "/search": {
+				if (searchIsLoading) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+			default:
+				return false;
 		}
 	};
 
 	const hasError = () => {
-		if (popularHasError || searchHasError) {
-			return true;
-		} else {
-			return false;
+		switch (currentRoute) {
+			case "/popular" || "/": {
+				if (popularHasError) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+			case "/search": {
+				if (searchHasError) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+			default:
+				return false;
 		}
 	};
 

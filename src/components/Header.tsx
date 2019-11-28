@@ -34,6 +34,7 @@ const Header: React.FC<IHeaderProps> = ({ onSearch }) => {
 
 	React.useEffect(() => {
 		onSearch(query);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [query]);
 
 	const handleReturnKey = (e: React.KeyboardEvent<HTMLInputElement>) => {

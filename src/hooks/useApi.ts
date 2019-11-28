@@ -115,98 +115,77 @@ export const useSearchApi = ({
 	const [data, setData] = React.useState<SearchResponse>(SEARCH_INITIAL_DATA);
 	const [currentPage, setCurrentPage] = React.useState<string>(page);
 	const [qry, setQry] = React.useState<string>(query);
+	const [debouncing, setDebouncing] = React.useState<boolean>(false);
 
-	// On query change: reset pagination and search with query
-	React.useEffect(() => {
-		if (qry.trim() === "") {
-			return;
-		}
+	const searchCallback = React.useCallback(
+		(keepPrevData = false) => {
+			if (debouncing) {
+				return;
+			}
 
-		setCurrentPage("1");
-
-		const URL = `${SEARCH_API_URL}/movie?api_key=${API_KEY}&query=${qry}&page=${currentPage}`;
-
-		let abortEffect = false;
-		const fetchData = () => {
+			const URL = `${SEARCH_API_URL}/movie?api_key=${API_KEY}&query=${qry}&page=${currentPage}`;
 			setHasError(false);
 			setIsLoading(true);
 
 			fetch(`${URL}`)
 				.then(res => res.json())
 				.then(resData => {
-					if (!abortEffect) {
-						if ("errors" in resData) {
-							setHasError(true);
-							setIsLoading(false);
+					if ("errors" in resData) {
+						setHasError(true);
+						setIsLoading(false);
+					} else {
+						if (keepPrevData) {
+							setData(prevData => {
+								return {
+									...resData,
+									results: [...prevData.results, ...resData.results],
+								};
+							});
 						} else {
 							setData({
 								...resData,
 								results: [...resData.results],
 							});
-							setIsLoading(false);
 						}
+
+						setIsLoading(false);
 					}
 				})
 				.catch(() => {
-					if (!abortEffect) {
-						setHasError(true);
-						setIsLoading(false);
-					}
+					setHasError(true);
+					setIsLoading(false);
 				});
-		};
+		},
+		[debouncing, qry, currentPage]
+	);
 
-		fetchData();
+	React.useEffect(() => {
+		if (qry.trim() === "") {
+			return;
+		}
+		setDebouncing(true);
+		setCurrentPage("1");
+
+		const timedDebouncing = setTimeout(() => {
+			setDebouncing(false);
+		}, 1000);
 
 		return () => {
-			abortEffect = true;
+			clearTimeout(timedDebouncing);
 		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [qry]);
 
-	// On page change: keep previous results and append next page
 	React.useEffect(() => {
 		if (qry.trim() === "") {
 			return;
 		}
 
-		const URL = `${SEARCH_API_URL}/movie?api_key=${API_KEY}&query=${qry}&page=${currentPage}`;
-
-		let abortEffect = false;
-		const fetchData = () => {
-			setHasError(false);
-			setIsLoading(true);
-
-			fetch(`${URL}`)
-				.then(res => res.json())
-				.then(resData => {
-					if (!abortEffect) {
-						if ("errors" in resData) {
-							setHasError(true);
-							setIsLoading(false);
-						} else {
-							setData(prevData => ({
-								...resData,
-								results: [...prevData.results, ...resData.results],
-							}));
-							setIsLoading(false);
-						}
-					}
-				})
-				.catch(() => {
-					if (!abortEffect) {
-						setHasError(true);
-						setIsLoading(false);
-					}
-				});
-		};
-
-		fetchData();
-
-		return () => {
-			abortEffect = true;
-		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [currentPage]);
+		if (currentPage !== "1") {
+			searchCallback(true);
+		} else {
+			searchCallback();
+		}
+	}, [qry, currentPage, searchCallback]);
 
 	return [{ isLoading, hasError, data }, setCurrentPage, setQry];
 };
