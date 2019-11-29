@@ -31,8 +31,6 @@ export const useIndexedDB = () => {
 			const titleIndex = store.createIndex("by_title", "title", {
 				unique: true,
 			});
-
-			setDB(db);
 		};
 
 		request.onsuccess = () => {
@@ -51,6 +49,10 @@ export const IDBTransaction = (
 	DB: IDBDatabase,
 	action: WatchLaterActionTypes
 ) => {
+	if (!DB) {
+		return;
+	}
+
 	const tx = DB.transaction(DB_STORE_NAME, "readwrite");
 	const store = tx.objectStore(DB_STORE_NAME);
 
