@@ -40,6 +40,7 @@ export const MoviesList: React.FC<IMovieListProps> = ({
 			isLoading: searchIsLoading,
 			hasError: searchHasError,
 			data: searchMoviesData,
+			hasNextPage: searchHasNextPage,
 		},
 		searchChangePage,
 		searchQuery,
@@ -168,6 +169,21 @@ export const MoviesList: React.FC<IMovieListProps> = ({
 		}
 	};
 
+	const renderLoadMoreButton = () => {
+		switch (currentRoute) {
+			case "/search": {
+				if (searchHasNextPage) {
+					return <button onClick={onLoadMore}>Load more</button>;
+				} else {
+					return;
+				}
+			}
+
+			default:
+				return <button onClick={onLoadMore}>Load more</button>;
+		}
+	};
+
 	return (
 		<>
 			<ul className="movies__list">
@@ -186,7 +202,7 @@ export const MoviesList: React.FC<IMovieListProps> = ({
 					{isLoading() ? (
 						<div className="spinner"></div>
 					) : (
-						<button onClick={onLoadMore}>Load more</button>
+						renderLoadMoreButton()
 					)}
 					{hasError() && <p>An error has occured 😵</p>}
 				</div>

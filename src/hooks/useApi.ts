@@ -94,7 +94,12 @@ interface UseSearchApiParams {
 }
 
 type UseSearchApiReturnType = [
-	{ hasError: boolean; isLoading: boolean; data: SearchResponse },
+	{
+		hasError: boolean;
+		isLoading: boolean;
+		data: SearchResponse;
+		hasNextPage: boolean;
+	},
 	React.Dispatch<React.SetStateAction<string>>,
 	React.Dispatch<React.SetStateAction<string>>
 ];
@@ -114,6 +119,7 @@ export const useSearchApi = ({
 	const [hasError, setHasError] = React.useState<boolean>(false);
 	const [data, setData] = React.useState<SearchResponse>(SEARCH_INITIAL_DATA);
 	const [currentPage, setCurrentPage] = React.useState<string>(page);
+	const [hasNextPage, setHasNextPage] = React.useState<boolean>(false);
 	const [qry, setQry] = React.useState<string>(query);
 	const [debouncing, setDebouncing] = React.useState<boolean>(false);
 
@@ -148,6 +154,12 @@ export const useSearchApi = ({
 							});
 						}
 
+						if (resData.total_pages > parseInt(currentPage, 10)) {
+							setHasNextPage(true);
+						} else {
+							setHasNextPage(false);
+						}
+
 						setIsLoading(false);
 					}
 				})
@@ -168,7 +180,7 @@ export const useSearchApi = ({
 
 		const timedDebouncing = setTimeout(() => {
 			setDebouncing(false);
-		}, 1000);
+		}, 500);
 
 		return () => {
 			clearTimeout(timedDebouncing);
@@ -187,5 +199,5 @@ export const useSearchApi = ({
 		}
 	}, [qry, currentPage, searchCallback]);
 
-	return [{ isLoading, hasError, data }, setCurrentPage, setQry];
+	return [{ isLoading, hasError, data, hasNextPage }, setCurrentPage, setQry];
 };
