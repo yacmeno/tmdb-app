@@ -82,3 +82,31 @@
 		}
 	}
 }
+
+@media (max-width: 700px) {
+	.movies {
+		&__description {
+			display: none;
+		}
+
+		&__icon {
+			margin: auto;
+		}
+	}
+}
+
+@media (max-width: 1000px) {
+	.movies {
+		&__list {
+			width: 95%;
+			margin: 0;
+		}
+
+		&__item {
+			img {
+				margin-top: auto;
+				margin-bottom: auto;
+			}
+		}
+	}
+}

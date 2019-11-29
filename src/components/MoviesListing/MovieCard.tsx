@@ -28,7 +28,7 @@ interface IMovieCardProps {
 const StarIcon: React.FC = () => {
 	return (
 		<span
-			className="star-icon"
+			className="star-icon movies__icon"
 			dangerouslySetInnerHTML={{ __html: star_icon }}
 		></span>
 	);
@@ -47,7 +47,7 @@ const WatchLaterIcon: React.FC<IWatchLaterIconProps> = ({ onAdd, movie }) => {
 	};
 	return (
 		<div
-			className="watch-later-icon"
+			className="watch-later-icon movies__icon"
 			dangerouslySetInnerHTML={{ __html: watch_later_icon }}
 			tabIndex={0}
 			onClick={() => onAdd(movie)}
@@ -98,7 +98,7 @@ export const MovieCard: React.FC<IMovieCardProps> = ({
 				src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
 				alt={`${movie.title} poster`}
 			/>
-			<div>
+			<div className="movies__description">
 				<p>{movie.title}</p>
 				<p>
 					<span className="movie-rating">
