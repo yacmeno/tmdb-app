@@ -1,17 +1,24 @@
-var path = require("path");
+const path = require("path");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
 	entry: path.join(__dirname, "src", "index.tsx"),
-	output: {
-		path: path.join(__dirname, "build"),
-		filename: "bundle.js",
-	},
 	resolve: {
 		extensions: [".ts", ".tsx", ".js", ".jsx"],
 	},
 	devtool: "source-map",
+
+	plugins: [
+		new CleanWebpackPlugin(),
+		new HtmlWebpackPlugin({
+			template: "./src/index.html",
+		}),
+		new MiniCssExtractPlugin({
+			filename: "[name].css",
+		}),
+	],
 	module: {
 		rules: [
 			{
@@ -43,16 +50,8 @@ module.exports = {
 			},
 		],
 	},
-	plugins: [
-		new HtmlWebpackPlugin({
-			template: "./src/index.html",
-		}),
-		new MiniCssExtractPlugin({
-			filename: "[name].css",
-		}),
-	],
-	devServer: {
-		stats: "errors-only",
-		historyApiFallback: true,
+	output: {
+		path: path.join(__dirname, "build"),
+		filename: "bundle.js",
 	},
 };
